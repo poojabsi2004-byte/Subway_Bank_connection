@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bsi_bank_statements_list_view" model="ir.ui.view">
+        <field name="name">bsi.store.bank.statements.list</field>
+        <field name="model">bsi.store.bank.statements</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="account_id"/>
+                <field name="store_id"/>
+                <field name="transaction_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bsi_bank_statements_form_view" model="ir.ui.view">
+        <field name="name">bsi.store.bank.statements.form</field>
+        <field name="model">bsi.store.bank.statements</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="generate_transactions" string="Generate Transactions" type="object" class="oe_stat_button" invisible="state in ['transactions','data_updated']"></button>
+                    <button name="update_both_foodcost_payroll" string="Update both" type="object" class="oe_stat_button" invisible="state in 'data_updated'"></button>
+                    <button name="update_food_cost" string="Update Food Cost" type="object" class="oe_stat_button" invisible="1"></button>
+                    <button name="update_payroll" string="Update Payroll" type="object" class="oe_stat_button" invisible="1"></button>
+                </header>
+                <sheet>
+                    <group string="Statements">
+                        <group>
+                            <field name="account_id"/>
+                            <field name="store_id"/>
+                        </group>
+                        <group>
+                            <field name="file_id"/>
+                        </group>
+                        <notebook>
+                            <page name="Transaction" string="Transaction">
+                                <field name="transaction_ids">
+                                    <list>
+                                        <field name="transaction_date"></field>
+                                        <field name="type_code"></field>
+                                        <field name="transaction_type"></field>
+                                        <field name="amount"></field>
+                                        <field name="store_scheduling" widget="many2many_tags"></field>
+                                        <field name="description"></field>
+                                    </list>
+                                </field>
+                            </page>
+                            <page name="Error" string="Error">
+                                <group name="Store Validation Error" string="Store Validation Error">
+                                    <field name="error"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_bank_statements_action" model="ir.actions.act_window">
+        <field name="name">Bank Statements</field>
+        <field name="res_model">bsi.store.bank.statements</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bsi_bank_statements_filter" model="ir.ui.view">
+        <field name="name">bsi.bank.statements.filter</field>
+        <field name="model">bsi.store.bank.statements</field>
+        <field name="priority" eval="16"/>
+        <field name="arch" type="xml">
+            <search string="Search Bank Statements">
+
+                <field name="account_id" string="File"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Account"
+                            name="group_by_file"
+                            context="{'group_by': 'account_id'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <menuitem id="menu_bsi_bank_statements"
+        name="Statements"
+        parent="menu_bsi_bank_connection_root"
+        action="bsi_bank_statements_action" sequence="1"/>
+    
+
+</odoo>

@@ -1,0 +1,45 @@
+<odoo>
+    <record id="bsi_sftp_file_list_view" model="ir.ui.view">
+        <field name="name">bsi.sftp.file.list</field>
+        <field name="model">bsi.sftp.files</field>
+        <field name="arch" type="xml">
+            <list>
+                <header>
+                    <button string="Fetch Data" name="sftp_connection" type="object" class="oe_highlight" display="always"/>
+                </header>
+                <field name="file_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bsi_bank_statement_log_form_view" model="ir.ui.view">
+        <field name="name">bsi.sftp.files.form</field>
+        <field name="model">bsi.sftp.files</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button string="Generate Statements" name="generate_statement" type="object" class="oe_highlight" invisible="state == 'statements'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="file_name" readonly="1" />
+                        <field name="download_file" filename='file_name'/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_sftp_files_action" model="ir.actions.act_window">
+        <field name="name">SFTP Files</field>
+        <field name="res_model">bsi.sftp.files</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bsi_sftp_files"
+        name="Files"
+        parent="menu_bsi_bank_connection_root"
+        action="bsi_sftp_files_action" sequence="6"/>
+
+</odoo>

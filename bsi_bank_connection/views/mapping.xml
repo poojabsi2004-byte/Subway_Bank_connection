@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bsi_mapping_list_view" model="ir.ui.view">
+        <field name="name">bsi.mapping.list.view</field>
+        <field name="model">bsi.mapping</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="account_id"/>
+                <field name="keyword"/>
+                <field name="previous_week"/>
+                <field name="previous_day"/>
+                <field name="field_name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- <record id="bsi_mapping_form_view" model="ir.ui.view">
+        <field name="name">bsi.mapping.form</field>
+        <field name="model">bsi.mapping</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group string="Mapping">
+                        <field name="account_id"/>
+                        <field name="keyword"/>
+                        <field name="previous_week"/>
+                        <field name="previous_day"/>
+                        <field name="field_name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+
+    <record id="bsi_mapping_action" model="ir.actions.act_window">
+        <field name="name">Bank Mapping</field>
+        <field name="res_model">bsi.mapping</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_bsi_mapping"
+        name="Mapping"
+        parent="menu_bsi_bank_connection_root"
+        action="bsi_mapping_action" sequence="5"/>
+    
+
+</odoo>

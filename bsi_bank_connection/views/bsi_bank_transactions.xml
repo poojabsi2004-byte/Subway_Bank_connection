@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bsi_bank_account_transactions_list_view" model="ir.ui.view">
+        <field name="name">bsi.bank.account.transaction.list</field>
+        <field name="model">bsi.bank.transactions</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="account_id"/>
+                <field name="store_id"/>
+                <field name="store_scheduling"/>
+                <field name="transaction_date"/>
+                <field name="transaction_type"/>
+                <field name="amount"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bsi_bank_account_transactions_form_view" model="ir.ui.view">
+        <field name="name">bsi.bank.account.transaction.form</field>
+        <field name="model">bsi.bank.transactions</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group string="Account Transactions">
+                        <field name="account_id"/>
+                        <field name="store_id"/>
+                        <field name="store_scheduling"/>
+                        <field name="transaction_date"/>
+                        <field name="type_code"/>
+                        <field name="transaction_type"/>
+                        <field name="fund_type"/>
+                        <field name="amount"/>
+                        <field name="description"></field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_bank_account_transactions_filter" model="ir.ui.view">
+        <field name="name">bsi.bank.account.transactions.filter</field>
+        <field name="model">bsi.bank.transactions</field>
+        <field name="priority" eval="16"/>
+        <field name="arch" type="xml">
+            <search string="Search Bank Statements">
+
+                <field name="transaction_type" string="File"/>
+                <field name="description"/>
+                <field name="fund_type"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Transaction Type"
+                            name="group_by_transaction_type"
+                            context="{'group_by': 'transaction_type'}"/>
+                    <filter string="Fund Type"
+                            name="group_by_fund_type"
+                            context="{'group_by': 'fund_type'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <record id="bsi_bank_account_transactions_action" model="ir.actions.act_window">
+        <field name="name">Bank Account Transactions</field>
+        <field name="res_model">bsi.bank.transactions</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bsi_bank_account_transactions"
+        name="Transactions"
+        parent="menu_bsi_bank_connection_root"
+        action="bsi_bank_account_transactions_action" sequence="2"/>
+    
+
+</odoo>

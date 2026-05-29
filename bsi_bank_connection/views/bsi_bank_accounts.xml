@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bsi_bank_accounts_list_view" model="ir.ui.view">
+        <field name="name">bsi.bank.accounts.list</field>
+        <field name="model">bsi.store.bank.accounts</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="account_number"/>
+                <field name="store_id"/>
+                <field name="account_name"/>
+                <field name="transaction_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bsi_bank_accounts_form_view" model="ir.ui.view">
+        <field name="name">bsi.bank.accounts.form</field>
+        <field name="model">bsi.store.bank.accounts</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="generate_transactions" string="Transactions" type="object" class="oe_stat_button"></button>
+                </header>
+                <sheet>
+                    <group string="Accounts">
+                        <field name="account_number"/>
+                        <field name="store_id"/>
+                        <field name="account_name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_bank_accounts_action" model="ir.actions.act_window">
+        <field name="name">Bank Accounts</field>
+        <field name="res_model">bsi.store.bank.accounts</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bsi_bank_accounts_filter" model="ir.ui.view">
+        <field name="name">bsi.bank.accounts.filter</field>
+        <field name="model">bsi.store.bank.accounts</field>
+        <field name="priority" eval="16"/>
+        <field name="arch" type="xml">
+            <search string="Search Bank Statements">
+
+                <field name="account_number" string="File"/>
+                <field name="account_name"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Account"
+                            name="group_by_file"
+                            context="{'group_by': 'account_number'}"/>
+                    <filter string="Account Name"
+                            name="group_by_status"
+                            context="{'group_by': 'account_name'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+     <menuitem
+        id="menu_bsi_bank_connection_root"
+        name="Bank Connection"
+        parent="bsi_subway_base.subway_management_menu"
+        sequence="10"/>
+
+    <menuitem id="menu_bsi_bank_accounts"
+        name="Accounts"
+        parent="menu_bsi_bank_connection_root"
+        action="bsi_bank_accounts_action" sequence="3"/>
+    
+
+</odoo>
