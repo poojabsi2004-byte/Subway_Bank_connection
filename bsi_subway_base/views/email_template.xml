@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- RM- AUG21-2025 Cash Deposit Remider -->
+        <record id="bsi_email_template_cash_deposit_alert" model="mail.template">
+            <field name="name">Cash Deposit Alert</field>
+            <field name="model_id" ref="bsi_subway_base.model_store_store"/>
+            <field name="subject">Cash Deposit Reminder</field>
+            <field name="email_from">{{user.email_formatted or 'noreply@example.com'}}</field>
+            <field name="email_to">{{ctx.get('recipient_emails')}}</field>
+            <field name="body_html" type="html">
+                <p>Dear District Manager,</p>
+
+                <p>
+                    This is to inform you that today,
+                    <b><t t-esc="ctx.get('current_day').capitalize()" /></b>
+                    (<b><t t-esc="ctx.get('current_date')" /></b>), 
+                    is the scheduled cash deposit day for store 
+                    <b><t t-esc="ctx.get('store_name')" /></b>.
+                </p>
+
+                <p>
+                    Please note that this is an <i>auto-generated</i> email notification.
+                </p>
+
+                <p>Best regards,<br/>
+                    <b><t t-esc="ctx.get('company_id')" /></b>
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

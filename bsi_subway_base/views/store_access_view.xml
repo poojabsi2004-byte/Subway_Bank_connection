@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bsi_view_employee_access_list" model="ir.ui.view">
+        <field name="name">emp.access.list</field>
+        <field name="model">emp.access</field>
+        <field name="arch" type="xml">
+            <list string="Employee Access" editable="bottom" create="true">
+                <field name="employee_id"/>
+                <field name="access_role"/>
+                <field name="store_ids" widget="many2many_tags"/>
+                <field name="store_numbers"/>
+                <field name="geo_location_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bsi_view_employee_access_list" model="ir.actions.act_window">
+        <field name="name">Store Access</field>
+        <field name="res_model">emp.access</field>
+        <field name="view_mode">list</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="bsi_view_employee_access_list"/>
+    </record>
+
+    <!-- <menuitem id="menu_action_bsi_view_employee_access_list"
+        name="Store Access"
+        parent="bsi_subway_base.config_import_update_submenu"
+        action="action_bsi_view_employee_access_list"
+        sequence="11"/> -->
+
+</odoo>

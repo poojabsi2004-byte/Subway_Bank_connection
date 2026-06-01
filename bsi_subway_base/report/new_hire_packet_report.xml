@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="paperformat_subway_packet" model="report.paperformat">
+            <field name="name">Subway Packet Letter</field>
+            <field name="default" eval="True"/>
+            <field name="format">Letter</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">15</field>
+            <field name="margin_right">15</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_new_hire_packet" model="ir.actions.report">
+            <field name="name">New Hire Packet (Subway)</field>
+            <field name="model">hr.employee</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bsi_subway_base.report_new_hire_packet_template</field>
+            <field name="report_file">bsi_subway_base.report_new_hire_packet_template</field>
+            <field name="binding_model_id" ref="hr.model_hr_employee"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="bsi_subway_base.paperformat_subway_packet"/>
+        </record>
+
+        <template id="report_new_hire_packet_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.basic_layout">
+                        <div class="page" style="font-family: 'Arial', sans-serif; font-size: 15px; line-height: 1.4; color: #000; padding-top: 20px;">
+                            
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 30px;">SUBWAY</div>
+                            
+                            <p style="margin-bottom: 15px;"><strong>I acknowledge the receipt of the following Subway uniform.</strong></p>
+                            <p style="margin-bottom: 10px;">I understand that I will receive two (2) Subway shirts: On my second paycheck, (1) shirt will be deducted from my paycheck.</p>
+                            <p style="margin-bottom: 10px;">Subway will provide me with (1) shirt, (1) hat or visor and (1) apron.</p>
+                            <p style="margin-bottom: 10px;">I understand that I must provide closed-toed shoes, black or khaki slacks or blue jeans, shorts no shorter than 2" above my knees.</p>
+                            <p style="margin-bottom: 10px;">I understand if I damage, destroy or lose my uniform, I will replace it at the cost listed below:</p>
+                            
+                            <table class="table table-bordered table-sm" style="width: 80%; margin: 30px auto; text-align: center;">
+                                <tr>
+                                    <td>Shirt $10</td>
+                                    <td>Hat $5</td>
+                                    <td>Apron $5</td>
+                                    <td>Visor/Hat $4</td>
+                                </tr>
+                            </table>
+
+                            <div style="margin-top: 80px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee Signature</div>
+                                </div>
+                                
+                                <div style="width: 45%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Date</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+                            
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Employee Acknowledgement</div>
+                            
+                            <ol style="padding-left: 20px;">
+                                <li style="margin-bottom: 15px;">I understand and agree to follow the safety and security standards including cash handling, hourly deposits, proper food handling, personal conduct, etc.</li>
+                                <li style="margin-bottom: 15px;">I agree to immediately report any work-related injury illness, or unsafe condition to my supervisor.</li>
+                                <li style="margin-bottom: 15px;">I understand that I must be in full uniform and present myself in a neat and clean manner during each of my work shifts.</li>
+                                <li style="margin-bottom: 15px;">I agree to follow all policies and procedures as required to the best of my ability.</li>
+                                <li style="margin-bottom: 15px;">I can perform all the tasks on the duty list with no restrictions or special accommodations.</li>
+                                <li style="margin-bottom: 15px;">I agree to be clean shaven for all scheduled shifts. I understand that a mustache and beard is permitted, however, it must be kept short, neat and trimmed at all times.</li>
+                                <li style="margin-bottom: 15px;">If you receive a store key, I understand that upon separation from the store, the key must be returned within 24 hours otherwise, a charge will be accessed to you for the cost of a lock smith.</li>
+                                <li style="margin-bottom: 15px;">The company strictly prohibits the possession of firearms and other dangerous weapons on company property.</li>
+                            </ol>
+
+                            <div style="margin-top: 60px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee Signature</div>
+                                </div>
+                                
+                                <div style="width: 45%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">&amp;nbsp;</div> <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Supervisor Signature</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <div style="margin-top: 40px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Date</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Employee Fraternization Policy</div>
+
+                            <p>Subway wants to preserve a working environment that has clear boundaries between personal and professional relationships. This is believed to be the best practice for conducting business in a professional manner. This policy establishes clear boundaries with regard to how relationships develop at work and within the confines of the work area.</p>
+                            
+                            <ul style="padding-left: 20px; margin-top: 20px;">
+                                <li style="margin-bottom: 15px;">During working hours and in work areas, employees of Subway are expected to keep all personal interactions limited and at a professional level to avoid distracting or offending others.</li>
+                                <li style="margin-bottom: 15px;">Employees are prohibited from engaging in any physical interactions that would be seen as inappropriate in the work area. What constitutes inappropriate conduct is in the discretion of the Company.</li>
+                                <li style="margin-bottom: 15px;">Employees who engage in personal relationships with others and allow these relationships to negatively affect the working environment will be subject to disciplinary action. If said employees fail to change their behavior after disciplinary action takes place, they may be subject to termination.</li>
+                                <li style="margin-bottom: 15px;"><strong>Romantic relationships between supervising, managing or executive employees and subordinates are strictly prohibited.</strong> If a relationship does develop between a supervising employee and his or her subordinate, management must be notified immediately so that a department store transfer may be considered.</li>
+                            </ul>
+
+                            <div style="margin-top: 80px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee Signature</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">90 Day Probationary Period</div>
+                            
+                            <div style="text-align: right; margin-bottom: 30px;">
+                                Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                            </div>
+
+                            <p style="margin-bottom: 15px;">During the first 90 days of employment, I understand that I am on a trial basis and are considered a continuation of the employment selection process.</p>
+                            <p style="margin-bottom: 15px;">The 90-day probationary period provides the Company the opportunity to observe and evaluate the capacity of the employee, which includes the employee's ability to satisfactorily perform the essential duties of his or her job; and to observe and evaluate the employee's work habits and conduct, including attendance and the employee's relationship with coworkers and supervisors.</p>
+                            <p style="margin-bottom: 15px;">During this probationary period, the Company may terminate employment immediately, with or without cause. Likewise, the employee may also terminate his or her employment with the Company at any time, with or without notice and with or without cause.</p>
+                            <p style="margin-bottom: 15px;">The 90 day probationary period is not a term of employment and is not intended, nor does it impact the at will nature of the relationship between the Company and the employee.</p>
+                            <p style="margin-bottom: 15px;"><strong>I understand that my first 90 days of employment is my probationary period that I can be terminated within the first 90 days with or without cause or notice.</strong></p>
+
+                            <div style="margin-top: 60px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee Signature</div>
+                                </div>
+                                <div style="width: 45%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">&amp;nbsp;</div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Supervisor Signature</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+                            <div style="margin-top: 40px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Date</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Team Rules and Disciplinary Policy</div>
+
+                            <p style="margin-bottom: 10px;">Purpose: Our business will be as successful as the team we have hired. You are an important member of our team. For our team to be successful we need rules to guide what we do.</p>
+                            <p style="margin-bottom: 20px;">These rules will help you work with other team members and will let you know up front what we expect of you. Violations of team rules affect everyone. This policy will explain team rules ad the results you can expect when a rule is broken.</p>
+
+                            <h4 style="font-weight: bold; margin-top: 20px; margin-bottom: 15px;">TEAM RULE VIOLATIONS</h4>
+                            
+                            <p><strong>1. Grounds for immediate termination</strong></p>
+                            <ul style="padding-left: 20px; margin-bottom: 20px;">
+                                <li>Stealing or mishandling of money</li>
+                                <li>Using drugs or alcohol while working (or being under the influence)</li>
+                                <li>Giving away or taking any product (food, drink or supplies)</li>
+                                <li>Refusing to follow a direct order from the manager or supervisor</li>
+                                <li>Assault of a team member or guest</li>
+                                <li>Being rude to a guest</li>
+                                <li>Closing the store early without approval from the GM or owner</li>
+                                <li>Not calling in or showing up for a shift</li>
+                            </ul>
+
+                            <p><strong>2. Serious Violations</strong></p>
+                            <p>Failing to;</p>
+                            <ul style="padding-left: 20px;">
+                                <li>Greet, talk with, or thank the guest</li>
+                                <li>Answer the telephone in a friendly manor</li>
+                                <li>Suggest other restaurants to guests</li>
+                                <li>Handel guest complaints in a friendly, sensitive manor</li>
+                                <li>Stay busy at all times so that other employees do not have to do your work that you are being paid to do</li>
+                                <li>Get along with other team members - no back biting, gossiping or putting down or harassing in any manor</li>
+                                <li>Failing to be on time for every shift</li>
+                            </ul>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Team Rules and Disciplinary Policy</div>
+
+                            <p><strong>3. Serious Violations continued;</strong></p>
+                            <ul style="padding-left: 20px; margin-bottom: 30px;">
+                                <li>Bringing friends into the work area</li>
+                                <li>Receiving or making phone calls or text messages except in an emergency.</li>
+                                <li>Failing to follow approved opening/closing procedures</li>
+                                <li>Failing to keep the workplace clean</li>
+                            </ul>
+
+                            <p>Should one of these team rules be violated, the following steps will happen until the behavior is either corrected, or the employee terminated.</p>
+                            <ol style="padding-left: 20px; margin-top: 15px;">
+                                <li>You will be reminded of the proper behavior</li>
+                                <li>You will have a sit-down, face to face talk with your manager</li>
+                                <li>You will sign a written warning form which will be placed in your file</li>
+                                <li>Your work hours will be reduced</li>
+                                <li>You will be terminated</li>
+                            </ol>
+
+                            <p style="margin-top: 40px; font-weight: bold;">I have read "Team Rules and Disciplinary Policy" and understand the rules and what will happen should I violate the rules.</p>
+
+                            <div style="margin-top: 60px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee Signature</div>
+                                </div>
+                                <div style="width: 45%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Date</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Cell Phone Policy</div>
+
+                            <p style="margin-bottom: 15px;">In order to promote consistency in our Guest Service, our employees must give out guest their undivided attention. Therefore, the following is our cell phone policy.</p>
+                            <ol style="padding-left: 20px;">
+                                <li style="margin-bottom: 15px;">When the employee comes to work they must put their cell phone away in the designated place provided by the manager.</li>
+                                <li style="margin-bottom: 15px;">Employee must never talk on their cell phone while taking care of a guest or during peak periods (11am-2pm and 6pm-8pm).</li>
+                                <li style="margin-bottom: 15px;">Employee will be allowed to check his/her cell phone once an hour outside of peak periods.</li>
+                                <li style="margin-bottom: 15px;">The employee may give their family the phone number to the store to contact them for emergency reasons.</li>
+                            </ol>
+
+                            <p style="margin-top: 60px; margin-bottom: 40px;">I, <span style="display: inline-block; width: 200px; border-bottom: 1px solid #000;"></span>, as an employee of Subway will follow the cell phone policy.</p>
+
+                            <div style="margin-top: 40px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">&amp;nbsp;</div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Manager Signature</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Store Computer or Laptop Policy</div>
+
+                            <p style="margin-bottom: 15px;">In regard to the use of any store computers, keep in mind that they are for professional use only.</p>
+                            <p style="margin-bottom: 15px;">There should be no time they are to be used for personal reasons such as Facebook as one example.</p>
+                            <p style="margin-bottom: 15px;"><strong>If we find that you have been using the computers for personal use, this will result in immediate termination.</strong></p>
+
+                            <div style="margin-top: 80px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee Signature</div>
+                                </div>
+                                <div style="width: 45%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">&amp;nbsp;</div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Manager Signature</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+                            <div style="margin-top: 40px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Date</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Online And Social Media Policy</div>
+
+                            <p style="margin-bottom: 10px;">Even though personal web pages on social community sites such as MySpace, YouTube, Facebook, Twitter and others are great forums for self-expression and communicating with your friends, you still must follow proper guidelines and policies.</p>
+                            <p style="margin-bottom: 10px;">If you talk about the SUBWAY brand online (e.g., blogs, message boards, forums, videos, photos etc.) please make sure you are respectful. Everything you post can be tracked, and anything that breaks the law and/or SUBWAY restaurant policies could result in disciplinary action. Remember, even if you delete a picture or post, it still may end up available online forever.</p>
+                            <p style="margin-bottom: 10px;">Cameras of any type are not allowed in our restaurants without written approval from the store owner.</p>
+                            <p style="margin-bottom: 10px;">Here are some tips for online and social community practices.</p>
+
+                            <ul style="padding-left: 20px;">
+                                <li style="margin-bottom: 10px;">Always be respectful about SUBWAY restaurants their employees your co-workers and customers. You can talk about your job, but keep comments positive and don't use names.</li>
+                                <li style="margin-bottom: 10px;">Be respectful of the SUBWAY brand even when you are off the clock. Don't let the things you do and say reflect poorly on you, your job or your community.</li>
+                                <li style="margin-bottom: 10px;">Never post inappropriate video or photos, especially of anything that happens in the restaurant.</li>
+                                <li style="margin-bottom: 10px;">Don't post any SUBWAY restaurant operational guidelines online, including product build cards, training materials and visual identification picture materials. This information is confidential and proprietary.</li>
+                                <li style="margin-bottom: 10px;">When you express your comments make it clear that what you're saying is your opinion.</li>
+                            </ul>
+
+                            <p style="page-break-before: always;"></p>
+
+                            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 10px;">SUBWAY</div>
+                            <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px;">Online And Social Media Policy Continued</div>
+
+                            <ul style="padding-left: 20px;">
+                                <li style="margin-bottom: 15px;">If you post an endorsement about the SUBWAY brand you should make it clear that you are a SUBWAY restaurant employee.</li>
+                            </ul>
+                            <p style="margin-bottom: 15px;">Think about the consequences of your actions. Franchise World Headquarters monitors online postings and notifies SUBWAY franchisees of postings concerning their restaurant(s). Be aware that all crimes including theft, vandalism and health code violations will be reported to the proper authorities.</p>
+                            <p style="margin-bottom: 15px;">Additionally, if someone is videotaping at the SUBWAY restaurant, either in the drive-thru or lobby, please contact the restaurant owner (or manager).</p>
+
+                            <p style="margin-top: 30px;">I understand that it is my responsibility to comply with this policy. Failure to do so may lead to termination and/or other legal consequences.</p>
+                            <p>I understand that I am entitled to a copy of this policy and I understand that this form will be retained in my personal file.</p>
+
+                            <div style="margin-top: 60px;">
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Signature of Employee</div>
+                                </div>
+                                <div style="width: 45%; float: left; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Date</div>
+                                </div>
+                                <!-- <div style="width: 45%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">&amp;nbsp;</div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee's Name - Printed</div>
+                                </div> -->
+                                <div style="clear: both;"></div>
+                            </div>
+                            <div style="margin-top: 40px;">
+                            	<div style="width: 100%; float: right; text-align: center;">
+                                    <div style="margin-bottom: 5px; font-size: 16px;">&amp;nbsp;</div>
+                                    <div style="border-bottom: 1px solid #000; width: 90%; margin: 0 auto;"></div>
+                                    <div style="font-weight: bold; margin-top: 5px;">Employee's Name - Printed</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                            </div>
+                            
+                            <div style="text-align: left; margin-top: 50px; color: red;">
+                                Note: This Document is Digitally Signed
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

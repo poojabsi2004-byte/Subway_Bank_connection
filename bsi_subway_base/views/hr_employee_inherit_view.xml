@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bsi_hr_employee_new_form_view" model="ir.ui.view">
+        <field name="name">bsi.hr.employee.form.view</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <form string="department">
+                <header>
+                    <button name="assign_higher_access_role_group_to_user" string="Sync 'Store Access' with user" type="object" class="btn-primary" groups="bsi_subway_base.store_admin"/>
+                    <field name="application_state" widget='statusbar' default="draft_state"/>
+<!--                     <button name="set_state_draft" string="set state draft" type="object" class="btn-primary"/>
+                    <button name="notify_employee" string="Send mail to employee" type="object" class="btn-primary"/>
+                    <button name="request_store_access" string="Request Store Acess" type="object" class="btn-primary"/>
+                    <button name="onboard_and_notify_employee" string="Onboard Employee" type="object" class="btn-primary"/> -->
+
+                    <button name="set_state_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            class="btn-primary"
+                            groups="bsi_subway_base.store_admin,bsi_subway_base.store_owner"/>
+                            
+                    <button name="notify_employee"
+                            string="Request Employee Details"
+                            type="object"
+                            class="btn-primary"
+                            groups="bsi_subway_base.store_dm"
+                            invisible="application_state != 'draft_state'"/>
+
+                    <button name="request_store_access"
+                            string="Request Store Access"
+                            type="object"
+                            class="btn-primary"
+                            groups="bsi_subway_base.store_employee"
+                            invisible="application_state != 'notify_employee'"/>
+
+                    <button name="onboard_and_notify_employee"
+                            string="Finish Onboarding"
+                            type="object"
+                            class="btn-primary"
+                            groups="bsi_subway_base.store_dm"
+                            invisible="application_state != 'request_store_access'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="req_emp_fields" widget="boolean_toggle" groups="bsi_subway_base.store_admin"/>
+                    </group>
+                    <div>
+                        <span>
+                            <b>Page 1 of 5</b>
+                            <field name="active" invisible="1"/>
+                        </span>
+                    </div>
+                    <group string="1. Personal Information">
+                        <group>
+                            <!-- <span class="o_form_label mx-30" invisible="1">
+                                <b>Full name</b>
+                            </span>
+                            <div class="d-flex" invisible="1">
+                                <field name="full_name" nolabel='1' placeholder="e.g. Jon" />
+                            </div> -->
+                            <span class="o_form_label mx-3 ">
+                                <b>First name*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="first_name" nolabel='1' placeholder="e.g. Jon" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Middle name*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="middle_name" nolabel='1' placeholder="e.g. Jon" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Last name*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="last_name" nolabel='1' placeholder="e.g. Jon" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>SSN No</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="ssn_no" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Address*</b>
+                            </span>
+                            <field name="address" nolabel='1' placeholder="Street Address" />
+                            <span class="o_form_label mx-3 ">
+                                <b> </b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="address_line_2" nolabel='1'
+                                    placeholder="Address Line 2" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b></b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="city" placeholder="City" />
+                                <span class="o_form_label mx-3 "> </span>
+                                <field name="state" nolabel='1' placeholder="State" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b> </b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="postal_zip_code" placeholder="Postal/Zip Code" />
+                                <span class="o_form_label mx-3 "> </span>
+                                <field name="country" nolabel='1' placeholder="Country" />
+                            </div>
+                        </group>
+                        <group>
+                            <span class="o_form_label mx-3 ">
+                                <b>Date of Birth*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="date_of_birth" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Email Id*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="email_id" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Gender*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="gender" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Timezone</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="tz" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 " groups="base.group_system">
+                                <b>Resource Calendar</b>
+                            </span>
+                            <div class="d-flex" groups="base.group_system">
+                                <field name="resource_calendar_id" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Cell No*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="cell_no_1" placeholder="###" />
+                                <span class="o_form_label mx-3 ">-</span>
+                                <field name="cell_no_2" nolabel='1' placeholder="###" />
+                                <span class="o_form_label mx-3 ">-</span>
+                                <field name="cell_no_3" nolabel='1' placeholder="####" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Related User</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="user_id" nolabel='1' readonly="1" />
+                            </div>
+                            <!--<span class="o_form_label mx-3 ">
+                                <b>Geo Locations</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="geo_location_ids" widget="many2many_tags"/>
+                            </div> -->
+                            <span class="o_form_label mx-3 ">
+                                <b>Last CheckIn/Out</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="last_lat" readonly="1"/>
+                                <span class="o_form_label mx-3"/>
+                                <field name="last_lng" readonly="1"/>
+                            </div>
+                            <field name="resource_id" required="0" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Store Access">
+                        <group width="100%">
+                            <field name="store_ids" widget="many2many_tags" readonly='1'/>
+                            <field name="user_ids" widget="many2many_tags" readonly='1'/>
+                        </group>
+                        <field name="employee_access_ids" nolabel='1'>
+                            <list editable='bottom'>
+                                <field name="access_role"/>
+                                <field name="store_ids" widget="many2many_tags"/>
+                                <field name="store_numbers"/>
+                                <field name="geo_location_ids" widget="many2many_tags"/>
+                            </list>
+                        </field>
+                    </group>
+                <!-- </sheet> -->
+                <!-- <sheet> -->
+                    <div>
+                        <span>
+                            <b>Page 2 of 5</b>
+                        </span>
+                    </div>
+
+                    <group string="2. Employment Details">
+                        <group>
+                            <span class="o_form_label mx-3 ">
+                                <b>Legal Entity Name*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="legal_entity_name" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Franchise Name*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="franchise_name" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Per Hour Wage</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="per_hr_wage" nolabel='1' />
+                            </div>
+                        </group>
+                        <group>
+                            <!-- <span class="o_form_label mx-3 ">
+                                <b>Store</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="store_id" nolabel='1' invisible="1"/>
+                                <field name="store_ids" nolabel='1'  widget="many2many_tags" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Store No.</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="store_no" nolabel='1' options="{'format': 0}" />
+                            </div> -->
+                            <span class="o_form_label mx-3 ">
+                                <b>Hired Date*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="hired_date" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Employment Type*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="employment_type" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Employment Title*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="employment_title" nolabel='1' />
+                            </div>
+                            <!-- <span class="o_form_label mx-3 ">
+                                <b>Employee Type</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="type_of_employee" nolabel='1' />
+                            </div> -->
+                        </group>
+                    </group>
+
+                    <group string="3. Competition">
+                        <group>
+                            <span class="o_form_label mx-3 ">
+                                <b>Type of Compensation*</b>
+                            </span>
+                            <div class="d-flex">
+                                <span class="o_form_label mx-3 "> </span>
+                                <field name="type_of_compensation" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 " invisible="type_of_compensation == 'salary'">
+                                <b>Hourly Rate*</b>
+                            </span>
+                            <div class="d-flex" invisible="type_of_compensation == 'salary'">
+                                <span class="o_form_label mx-3 ">$</span>
+                                <field name="dollars" placeholder="Dollars" nolabel='1' />
+                                <span class="o_form_label mx-3 ">.</span>
+                                <field name="cents" nolabel='1' placeholder="Cents" />
+                            </div>
+                            <span class="o_form_label mx-3 " invisible="type_of_compensation == 'hourly_rate'">
+                                <b>Salary*</b>
+                            </span>
+                            <div class="d-flex" invisible="type_of_compensation == 'hourly_rate'">
+                                <span class="o_form_label mx-3 ">$</span>
+                                <field name="dollars" placeholder="Dollars" nolabel='1' />
+                                <span class="o_form_label mx-3 ">.</span>
+                                <field name="cents" nolabel='1' placeholder="Cents" />
+                            </div>
+                        </group>
+                    </group>
+                    <group string="4. Bank Information">
+                        <group>
+                            <span class="o_form_label mx-3 ">
+                                <b>Name of Bank</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="name_of_bank" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Accounting No.</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="account_no" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Routing No.</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="routing_no" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Account Type</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="account_type" nolabel='1' />
+                            </div>
+                        </group>
+                    </group>
+                <!-- </sheet> -->
+                <!-- <sheet> -->
+                    <div>
+                        <span>
+                            <b>Page 3 of 5</b>
+                        </span>
+                    </div>
+                    <group string="5. Tax Information">
+                        <group>
+                            <span class="o_form_label mx-3 ">
+                                <b>Filing Status*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="filing_status" nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>No of dependents claimed in form W4 (line 5)*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="no_of_dependents_claimed_in_form_w4_line_5"
+                                    nolabel='1' />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>IPC Tax Credit Form (WOTC)*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="ipc_tax_credit_form_wotc" nolabel='1' />
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Attachments">
+                        <group>
+                            <span class="o_form_label mx-3 ">
+                                <b>Form W4*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="form_w4" nolabel='1' widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>SSN Card*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="ssn_card" nolabel='1' widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Form I9*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="form_i9" nolabel='1' widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>ID Proof (like Driving Licence, etc )*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="id_proof" nolabel='1' widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>IRS Online W2 &amp; Paystub Acceptance*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="irs_online_w2_and_paysub_acceptance" nolabel='1'
+                                    widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Work permit (If applicable)</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="work_permit" nolabel='1' widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Insurance Enrollment for Obama Care</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="insurance_enrollment_for_obama_care" nolabel='1'
+                                    widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Electronic Pay Card*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="electronic_pay_card" nolabel='1'
+                                    widget="many2many_binary" />
+                            </div>
+                            <span class="o_form_label mx-3 ">
+                                <b>Others*</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="others" nolabel='1' widget="many2many_binary" />
+                            </div>
+                        </group>
+                    </group>
+                <!-- </sheet> -->
+                <!-- <sheet> -->
+                    <div>
+                        <span>
+                            <b>Page 4 of 5</b>
+                        </span>
+                    </div>
+                    <br />
+                    <b>
+                        <field name="page_2_terms_and_conditions" nolabel='1' />
+                    </b>
+                    <group>
+                        <div class="d-flex">
+                            <field name="terms_and_conditions" nolabel='1'
+                            />
+                            <span class="o_form_label mx-3 ">I acknowledge that I
+                                have read and agree to the above Terms and Conditions*</span>
+                        </div>
+                    </group>
+                <!-- </sheet> -->
+                <!-- <sheet> -->
+                    <div>
+                        <span>
+                            <b>Page 5 of 5</b>
+                        </span>
+                    </div>
+                    <br/>
+                    <b>
+                        <field name="page_3_terms_and_conditions" nolabel='1' />
+                    </b>
+                    <group>
+                        <div class="d-flex">
+                            <field name="terms_and_conditions" nolabel='1'
+                            />
+                            <span class="o_form_label mx-3 ">I acknowledge that I
+                                have read and agree to the above Terms and Conditions*</span>
+                        </div>
+                    </group>
+                        
+                    <!-- RM [26Dec-2025] [ADD - signature in pdf - START] -->
+                    <group string="Digital Signature Details" name="digital_sig_group">
+                        <div colspan="2" class="alert alert-info mb-3" role="alert" style="margin-bottom: 10px;" invisible="is_policy_signed">
+                            <i class="fa fa-info-circle me-2"/> 
+                            Please review this privacy pdf and after "Update digital signature PDF" button click.
+                        </div>
+                        <div colspan="2" class="alert alert-info mb-3" role="alert" style="margin-bottom: 10px;" invisible="not is_policy_signed">
+                            <i class="fa fa-info-circle me-2"/>
+                            You have successfully signed the Hiring Policy.
+                        </div>
+                        <field name="is_policy_signed" readonly="1" widget="boolean_toggle"/>
+                        <div colspan="2" class="d-flex align-items-center flex-wrap" style="gap: 20px;">
+                            <div class="d-flex align-items-center">
+                                <field name="custom_pdf_filename" invisible="1"/>
+                                <field name="custom_pdf_file" filename="custom_pdf_filename" widget="binary" readonly="1" nolabel="1"/>
+                            </div>
+
+                            <button name="action_replace_with_signed_pdf" 
+                                    string="Update digital signature PDF" 
+                                    type="object" 
+                                    class="btn btn-primary"
+                                    invisible="is_policy_signed"
+                                    confirm="Please review the document carefully before signing.&#10;Clicking OK indicates that you have read the document and wish to sign it digitally."/>
+                        </div>
+                    </group>
+                    <br/><br/>
+                    <!-- RM [26Dec-2025] [ADD - signature in pdf - END] -->
+
+                    <button name="notify_employee" string="Active Employee" type="object" class="btn-primary" invisible="(id == False) or (user_id != False)"/>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_hr_employee_new_list_view" model="ir.ui.view">
+        <field name="name">hr.employee.list.view</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="first_name" />
+                <field name="middle_name" />
+                <field name="last_name" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_do_active_hr_employee" model="ir.actions.server">
+        <field name="name">Active Employee</field>
+        <field name="model_id" ref="bsi_subway_base.model_hr_employee"/>
+        <field name="binding_model_id" ref="bsi_subway_base.model_hr_employee"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">model.action_create_active_employee()</field>
+    </record>
+
+    <record id="action_bsi_hr_employee_view" model="ir.actions.act_window">
+        <field name="name">Employee</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('bsi_subway_base.bsi_hr_employee_new_list_view')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('bsi_subway_base.bsi_hr_employee_new_form_view')})]"/>
+    </record>
+</odoo>

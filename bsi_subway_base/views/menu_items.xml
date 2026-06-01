@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="subway_management_menu"
+        name="Subway Management"
+        web_icon="bsi_subway_base,static/description/subway.png"
+        groups="bsi_subway_base.store_employee"/>
+
+        <menuitem id="store_main_menu"
+            name="Stores"
+            parent="bsi_subway_base.subway_management_menu"
+            action="bsi_subway_base.action_store_store_view"
+            sequence="1"
+            groups="bsi_subway_base.store_manager"/>
+
+        <menuitem id="hr_employee_new_menu"
+            parent="bsi_subway_base.subway_management_menu"
+            action="action_bsi_hr_employee_view"
+            name="Employees Onboard"
+            sequence="5"
+            groups="bsi_subway_base.store_employee"/>
+
+            <menuitem
+                id="hr.menu_hr_root"
+                name="Employees"
+                web_icon="hr,static/description/icon.png"
+                sequence="185"
+                active="False"/>
+
+        <menuitem id="store_scheduling_main_menu"
+            name="Store Scheduling"
+            parent="bsi_subway_base.subway_management_menu"
+            sequence="10"
+            groups="bsi_subway_base.store_manager"/>
+
+            <menuitem id="store_scheduling_menu"
+                name="Store Scheduling"
+                parent="bsi_subway_base.store_scheduling_main_menu"
+                action="action_bsi_store_scheduling_views"
+                sequence="1"
+                groups="bsi_subway_base.store_manager"/>
+
+            <menuitem id="store_scheduling_reeuests"
+                name="Scheduling Requests"
+                parent="bsi_subway_base.store_scheduling_main_menu"
+                action="action_bsi_store_district_manager_views"
+                sequence="2"
+                groups="bsi_subway_base.store_dm"/>
+
+        <menuitem id="bsi_attendance_root_menu"
+            name="Attendance"
+            parent="bsi_subway_base.subway_management_menu"
+            sequence="10"
+            groups="bsi_subway_base.store_employee"/>
+            
+            <menuitem id="menu_attendance_overview"
+            name="Attendance"
+            parent="bsi_subway_base.bsi_attendance_root_menu"
+            sequence="1"
+            action="hr_attendance.hr_attendance_action"
+            groups="bsi_subway_base.store_employee"/> 
+            
+            <menuitem id="menu_hr_attendance_attendances_overview"
+            name="Attendance Adjustment"
+            parent="bsi_subway_base.bsi_attendance_root_menu"
+            sequence="2"
+            action="action_hr_attendance_adjustment"
+            groups="bsi_subway_base.store_dm,bsi_subway_base.store_owner,bsi_subway_base.store_admin"/>    
+
+        <menuitem id="store_config_menu"
+            name="Configuration"
+            parent="bsi_subway_base.subway_management_menu"
+            sequence="100"
+            groups="bsi_subway_base.store_owner"/>
+
+            <menuitem id="store_submenu_config_menu"
+                name="Store"
+                parent="bsi_subway_base.store_config_menu"
+                sequence="1"/>
+
+                <menuitem id="menu_emp_geo"
+                    name="Geo-locations" 
+                    parent="bsi_subway_base.store_submenu_config_menu"
+                    action="bsi_geo_attendance.action_emp_geo_view"
+                    sequence="1"/>
+
+            <menuitem id="store_scheduling_submenu_config_menu"
+                name="Store Scheduling"
+                parent="bsi_subway_base.store_config_menu"
+                sequence="10"/>
+
+                <menuitem id="store_actual_hours_menu"
+                    name="Store Allowed hours management"
+                    parent="bsi_subway_base.store_scheduling_submenu_config_menu"
+                    action="action_store_actual_hours_view"
+                    sequence="1"/>
+
+            <menuitem id="config_import_update_submenu"
+                name="Data Import/Update"
+                parent="bsi_subway_base.store_config_menu"
+                sequence="15"
+                groups="bsi_subway_base.store_admin"/>
+
+                <!-- ################# WORK Hours Class - Not used in new code #################
+                <menuitem id="store_hours_menu"
+                    name="Employee Hours Management"
+                    parent="bsi_subway_base.store_submenu_config_menu"
+                    action="action_bsi_work_hour_view"/-->
+
+            <!--menuitem id="store_submenu_geo_location_menu" parent="bsi_subway_base.store_config_menu" name="Geo Locations" /> -->
+
+    <menuitem id="menu_hr_attendance_attendances_overview_custom"
+        name="Attendance Adjustment"
+        parent="hr_attendance.menu_hr_attendance_root"
+        sequence="20"
+        action="action_hr_attendance_adjustment"
+        groups="bsi_subway_base.store_dm"/>
+   
+
+    <!-- RM = Jul7 Check In / Check Out menu hide for DM/SM -->
+    <!-- <record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_my_attendances">
+        <field name="groups_id" eval="[(6,0, [ref('bsi_subway_base.store_admin')])]"/>
+    </record> -->
+
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="dm_att_report_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <div>
+                        <!-- <h3>Sale Order: <t t-esc="doc.name"/></h3> -->
+                        <div t-raw="doc.body_html"/>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="dm_att_report_report" model="ir.actions.report">
+            <field name="name">Attendance Report for HM</field>
+            <field name="model">mail.mail</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bsi_subway_base.dm_att_report_report_template</field>
+            <!-- <field name="file">bsi_subway_base.sale_order_html_report_template</field> -->
+        </record>
+
+    </data>
+</odoo>

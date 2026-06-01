@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <!-- Extend hr_attendance menu to show Check In/Out button only if user has permission, with dynamic styling based on state -->
+    <t t-name="bsi_subway_base.custom_attendance_menu" t-inherit="hr_attendance.attendance_menu" t-inherit-mode="extension">
+        <xpath expr="//button[@t-on-click='() => this.signInOut()' and contains(@class, 'mt-3')]" position="replace">
+            <button t-if="state.canCheckInOut" t-on-click="() => this.signInOut()" class="flex-basis-100 mt-3" t-attf-class="btn btn-{{ this.state.checkedIn ? 'warning' : 'success' }}">
+                <span t-if="!this.state.checkedIn">Check in</span>
+                <span t-else="">Check out</span>
+                <i t-attf-class="fa fa-sign-{{ this.state.checkedIn ? 'out' : 'in' }} ms-1"/>
+            </button>
+        </xpath>
+        <xpath expr="//button[@t-if='this.isFirstAttendance']" position="replace">
+            <button t-if="this.isFirstAttendance and state.canCheckInOut" t-on-click="() => this.signInOut()" t-attf-class="btn btn-{{ this.state.checkedIn ? 'warning' : 'success' }}">
+                <span t-if="!this.state.checkedIn">Check in</span>
+                <span t-else="">Check out</span>
+                <i t-attf-class="fa fa-sign-{{ this.state.checkedIn ? 'out' : 'in' }} ms-1"/>
+            </button>
+        </xpath>
+    </t>
+</templates>

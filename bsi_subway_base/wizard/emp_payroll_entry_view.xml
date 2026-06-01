@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bsi_employee_payroll_wizard_form_view" model="ir.ui.view">
+        <field name="name">bsi.employee.payroll.entry.wizard.form</field>
+        <field name="model">bsi.employee.payroll.entry.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Product">
+                <sheet>
+                    <group>
+                        <field name="store_id" required='1'/>
+                        <!-- <field name="scheduling_ids" widget="many2many_tags"  required='1'/> -->
+                        <field name="scheduling_ids">
+                            <list>
+                                <field name="combination_rec_name"/>
+                                <field name="week_starting_date"/>
+                                <field name="week_ending_date"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                        <button string="Print Payroll" type="object" name="print_payroll" class="btn-default" />
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>	   		
+        </field>
+    </record>
+
+    <record id="action_bsi_employee_payroll_wizard_form_view" model="ir.actions.act_window">
+        <field name="name">Print Employee Payroll</field>
+        <field name="res_model">bsi.employee.payroll.entry.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="bsi_employee_payroll_wizard_form_view"/>	
+    </record>
+
+    <menuitem id="menu_action_bsi_employee_payroll_wizard_form_view"
+        name="Print Weekly Payroll"
+        parent="bsi_subway_base.bsi_attendance_root_menu"
+        action="action_bsi_employee_payroll_wizard_form_view"
+        sequence="5"
+        groups="bsi_subway_base.store_dm"/>
+
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- RM - 6 Aug [ADD] user wise att record rule -->
+	<record id="bsi_res_users_form_view_inherit" model="ir.ui.view">
+		<field name="name">res.users.form.view.inherir</field>
+		<field name="model">res.users</field>
+		<field name="inherit_id" ref="base.view_users_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//notebook" position="before">
+				<label for="domain_employee_ids"/>
+				<field name="domain_employee_ids" widget="many2many_tags" readonly="1" invisible="0"/>
+			</xpath>
+		</field>
+	</record>
+
+	<!-- RM - 29 Aug [ADD] change label 'email address' to 'Username' -->
+	<record id="bsi_res_users_simple_form_view_inherit" model="ir.ui.view">
+		<field name="name">res.users.simple.form.view.inherit</field>
+		<field name="model">res.users</field>
+		<field name="inherit_id" ref="base.view_users_simple_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//form//sheet//div//label[@for='login']" position="attributes">
+				<attribute name="string">Username</attribute>
+			</xpath>
+			<!-- RM - 7FEB [ADD] Readonly login field -->
+			<xpath expr="//form//sheet//div//field[@name='login']" position="attributes">
+				<attribute name="readonly">1</attribute>
+			</xpath>
+		</field>
+	</record>
+</odoo>

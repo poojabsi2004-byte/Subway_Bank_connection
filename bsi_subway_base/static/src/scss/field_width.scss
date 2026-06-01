@@ -1,0 +1,9 @@
+.o_list_view {
+  .o_list_table {
+      th.o_column_sortable[data-name="employee_id"]
+      {
+          width: 100px !important;
+          max-width: 100px !important;
+      }
+  }
+}

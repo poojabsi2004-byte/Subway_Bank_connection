@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- |||||||||||||||||||||||||||||||||||||||NEW==|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| -->
+
+
+    <record id="bsi_store_scheduling_form_view" model="ir.ui.view">
+        <field name="name">store.scheduling.form</field>
+        <field name="model">store.scheduling</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    
+                    <button name="action_start_scheduling"
+                        string="Request for Approval"
+                        type="object" class="btn-primary" invisible="is_allowed_hours_match or not (state in ['draft'])"/>
+                    <!-- <button name="action_approve" type="object" string="Approve" class="btn-primary" attrs="{'invisible':[('state','not in',('to_be_approve'))]}" groups="bsi_subway_base.store_dm"/> -->
+                    <!-- <button name="action_reject" type="object" string="Reject" class="btn-primary" attrs="{'invisible':[('state','not in',('to_be_approve'))]}" groups="bsi_subway_base.store_dm"/> -->
+                    <button name="action_start" type="object" string="Start" class="btn-primary" invisible="not (state in ['approved', 'rejected'])"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-primary" invisible="not (state in ['cancelled','done','draft','to_be_approve'])"/>
+                    <button name="action_done" type="object" string="Done" class="btn-primary" invisible="not (state in ['done','cancelled','draft','to_be_approve'])"/>
+                </header>
+                <sheet>
+
+                    <group>
+                        <group string="Store Scheduling">
+                            <field name="store_id" readonly="not is_user_admin"/>
+                            <field name="store_number" options="{'format': 0}" widget="char"/>
+                            <field name="week_starting_date" readonly="not is_user_admin"/>
+                            <field name="week_ending_date" readonly="not is_user_admin"/>
+                            <field name="currency_id"/>
+                            <field name="geo_location_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+
+                        <group string="Sales Data">
+                            <field name="last_week_sale" widget="monetary"/>
+                            <field name="last_year_this_week_sale" widget="monetary"/>
+                            <field name="net_sales" widget="monetary" />
+                            <field name="ytd_avg_net_sales" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="food_cost" string="Food Cost/Expense">
+                            <field name="allowed_percentage_food_cost"/>
+                            <field name="allowed_food_cost"/>
+                            <field name="food_cost"/>
+                            <field name="manual_food_cost"/>
+                            <field name="total_food_cost"/>
+                            <field name="food_cost_in_percentage"/>
+                            <field name="over_or_short_food_cost"/>
+                            <field name="truck_order_1"/>
+                            <field name="over_or_short_food_bank_and_truck"/>
+                        </group>
+                        <group name="food_cost_ytd" string="Food Cost YTD">
+                            <field name="ytd_average_food_cost"/>
+                            <field name="ytd_average_food_cost_percentage"/>
+                            <field name="ytd_over_or_short_food_cost"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="payroll" string="Payroll Fields">
+                            <field name="payroll_taxes"/>
+                            <field name="payroll_productivity"/>
+                            <field name="paychex_total_debit"/>
+                            <field name="payroll_total" groups="bsi_subway_base.store_owner"/>
+                            <field name="percentage_of_payroll"/>
+                            <field name="fc_and_lc_percentage"/>
+                            <field name="average_hourly_pay"/>
+                        </group>
+                        <group name="ytd_payroll" string="YTD Payroll">
+                            <field name="ytd_average_percentage_of_payroll"/>
+                            <field name="ytd_fc_and_lc_percentage"/>
+                            <field name="ytd_over_or_short_in_hours"/>
+                            <field name="ytd_over_or_short_dollar_in_lc"/>
+                            <field name="ytd_over_or_short_dollar_in_fc_and_lc"/>
+                            <field name="ytd_total_hours"/>
+                            <field name="ytd_average_hourly_pay"/>
+
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="scheduling_hours" string="Scheduling Hours">
+                            <field name="store_employees_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="store_manager_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="district_manager_ids" widget="many2many_tags" invisible="1"/>
+
+                            <field name="total_hours"/>
+                            <field name="fixed_hours"/>
+                            <field name="matrix_allowed_hours"/>
+                            <field name="over_or_short_matrix_hours"/>
+                            <field name="min_allow_hr_range"/>
+                            <field name="max_allow_hr_range"/>
+                            <field name="grace"/>
+                        </group>
+                        <group name="tips" string="Tips" invisible='0'>
+                            <field name="total_tips"/>
+                            <field name="tips_per_employee_hour"/>
+                            <field name="total_hourly_pay_including_tips"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="Backend Fields" string="Backend Fields">
+                            <field name="is_user_admin" invisible="1"/>
+                            <field name="current_user_id" invisible="1"/>
+                            <field name="is_readonly_record" invisible="1"/>
+                            <field name="is_allowed_hours_match" invisible="1"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>           
+
+<!-- ===================================================================================================================== -->
+                    <notebook>
+                        <page string='Store Planning'>
+                            <field name="bsi_work_planning_ids" force_save="1">
+                                <list editable='bottom'  >
+                                    <!-- <field name="selection_planning" /> -->
+                                    <field name="employee_id" domain="['|','|',('id','in', parent.store_employees_ids),('id','in', parent.store_manager_ids),('id','in',parent.district_manager_ids)]" />
+                                    <field name="starting_date" force_save="1" column_invisible="1"/>
+                                    <field name="day_1" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_2" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_3" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_4" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_5" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_6" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_7" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="wed_in" widget="float_time"/>
+                                    <field name="wed_out" widget="float_time" />
+                                    <field name="thur_in" widget="float_time"/>
+                                    <field name="thur_out" widget="float_time"/>
+                                    <field name="fri_in" widget="float_time"/>
+                                    <field name="fri_out" widget="float_time"/>
+                                    <field name="sat_in" widget="float_time"/>
+                                    <field name="sat_out" widget="float_time"/>
+                                    <field name="sun_in" widget="float_time"/>
+                                    <field name="sun_out" widget="float_time"/>
+                                    <field name="mon_in" widget="float_time"/>
+                                    <field name="mon_out" widget="float_time"/>
+                                    <field name="tue_in" widget="float_time"/>
+                                    <field name="tue_out" widget="float_time"/>
+                                    <field name="ending_date" force_save="1" readonly="1" column_invisible="1"/>
+                                    <field name="total_scheduled_hours_week" widget="float_time" />
+                                    <field name="bsi_work_planning_id" column_invisible='1' />
+                                </list>
+                            </field>
+                            <group class="oe_right">
+                                <field name="allowed_scheduling_hours" widget="float_time"/>
+                                <field name="total_scheduled_hours" class="oe_right" widget="float_time"/>
+                                <field name="over_or_short_allowed_hours" widget="float_time"/>
+                            </group>
+                        </page>
+                        <page string="Store Working">
+                            <field name="bsi_store_work_ids" force_save="1">
+                                <list editable="bottom" class="o_my_class">
+                                    <field name="employee_id"  />
+                                    <field name="starting_date" invisible="1"/>
+                                    <field name="day_1" widget="float_time"/>
+                                    <field name="day_2" widget="float_time"/>
+                                    <field name="day_3" widget="float_time"/>
+                                    <field name="day_4" widget="float_time"/>
+                                    <field name="day_5" widget="float_time"/>
+                                    <field name="day_6" widget="float_time"/>
+                                    <field name="day_7" widget="float_time"/>
+                                    <field name="ending_date" invisible="1"/>
+                                    <field name="total_worked_hours_week" widget="float_time"/>
+                                    <field name="emp_per_hr_wage" force_save="1"/>
+                                    <field name="total_expenses"/>
+                                    <button name="action_get_attendance" type="object" string=" " class="fa fa-refresh" help="To get Attendaces of Employee"/>
+                                    <button name="view_attendace_record" type="object" string=" " class="fa fa-info-circle" help="To check Attendances of Employee"/>
+                                </list>
+                            </field>
+                            <group class="oe_right">
+                                <field name="total_worked_hours" class="oe_right" widget="float_time" />
+                                <field name="over_or_short_worked_hours" widget="float_time"/>
+                            </group>
+                        </page>
+
+                        <page string="Store Cash Deposit">
+                            <field name="store_cash_deposit_ids">
+                                <list create="true" editable="bottom">
+                                    <field name="user_id" readonly="1"/>
+                                    <!-- <field name="creation_date"/> -->
+                                    <field name="selected_date"/>
+                                    <field name="deposit_amount"/>
+                                    <field name="image" widget="image"/>
+                                    <field name="state"/>
+                                    <field name="store_scheduling_id" invisible="1"/>
+                                    <button name="action_approve_cash_deposit" type="object" string="Approve" class="btn-primary" invisible="state == 'approved'" groups="bsi_subway_base.store_dm"/>
+                                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-primary" invisible="state == 'draft'" groups="bsi_subway_base.store_dm"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Truck Order Details">
+                            <field name="truck_order_ids">
+                                <list editable="bottom">
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="description"/>
+                                    <field name="truck_order_amount"/>
+                                </list>
+                            </field>
+                            <group class="oe_right">
+                                <field name="truck_order_1"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_store_scheduling_requests_form_view" model="ir.ui.view">
+        <field name="name">store.scheduling.scheduling.request.form.view</field>
+        <field name="model">store.scheduling</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start_scheduling" type="object" string="Request for Approval" class="btn-primary" invisible="is_allowed_hours_match or not (state in ['draft'])"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="not (state in ['to_be_approve'])" groups="bsi_subway_base.store_dm"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-primary" invisible="not (state in ['to_be_approve'])" groups="bsi_subway_base.store_dm"/>
+                    <button name="action_start" type="object" string="Start" class="btn-primary" invisible="not (state in ['approved', 'rejected'])"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-primary" invisible="state in ['cancelled', 'done', 'draft', 'to_be_approve']"/>
+                    <button name="action_done" type="object" string="Done" class="btn-primary" invisible="state in ['done', 'cancelled', 'draft', 'to_be_approve']"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Store Scheduling">
+                            <field name="store_id" readonly="not is_user_admin"/>
+                            <field name="store_number" options="{'format': 0}" widget="char"/>
+                            <field name="week_starting_date" readonly="not is_user_admin"/>
+                            <field name="week_ending_date" readonly="not is_user_admin"/>
+                            <field name="currency_id"/>
+                            <field name="geo_location_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+
+                        <group string="Sales Data">
+                            <field name="last_week_sale" widget="monetary"/>
+                            <field name="last_year_this_week_sale" widget="monetary"/>
+                            <field name="net_sales" widget="monetary" />
+                            <field name="ytd_avg_net_sales" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="food_cost" string="Food Cost/Expense">
+                            <field name="allowed_percentage_food_cost"/>
+                            <field name="allowed_food_cost"/>
+                            <field name="food_cost"/>
+                            <field name="food_cost_in_percentage"/>
+                            <field name="over_or_short_food_cost"/>
+                            <field name="truck_order_1"/>
+                            <field name="over_or_short_food_bank_and_truck"/>
+                        </group>
+                        <group name="food_cost_ytd" string="Food Cost YTD">
+                            <field name="ytd_average_food_cost"/>
+                            <field name="ytd_average_food_cost_percentage"/>
+                            <field name="ytd_over_or_short_food_cost"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="payroll" string="Payroll Fields">
+                            <field name="payroll_taxes"/>
+                            <field name="paychex_total_debit"/>
+                            <field name="percentage_of_payroll"/>
+                            <field name="fc_and_lc_percentage"/>
+                            <field name="average_hourly_pay"/>
+                        </group>
+                        <group name="ytd_payroll" string="YTD Payroll">
+                            <field name="ytd_average_percentage_of_payroll"/>
+                            <field name="ytd_fc_and_lc_percentage"/>
+                            <field name="ytd_over_or_short_in_hours"/>
+                            <field name="ytd_over_or_short_dollar_in_lc"/>
+                            <field name="ytd_over_or_short_dollar_in_fc_and_lc"/>
+                            <field name="ytd_total_hours"/>
+                            <field name="ytd_average_hourly_pay"/>
+
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="scheduling_hours" string="Scheduling Hours">
+                            <field name="store_employees_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="store_manager_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="district_manager_ids" widget="many2many_tags" invisible="1"/>
+
+                            <field name="total_hours"/>
+                            <field name="fixed_hours"/>
+                            <field name="matrix_allowed_hours"/>
+                            <field name="over_or_short_matrix_hours"/>
+                            <field name="min_allow_hr_range"/>
+                            <field name="max_allow_hr_range"/>
+                            <field name="grace"/>
+                        </group>
+                        <group name="tips" string="Tips" invisible='0'>
+                            <field name="total_tips"/>
+                            <field name="tips_per_employee_hour"/>
+                            <field name="total_hourly_pay_including_tips"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="Backend Fields" string="Backend Fields">
+                            <field name="is_user_admin" invisible="1"/>
+                            <field name="current_user_id" invisible="1"/>
+                            <field name="is_readonly_record" invisible="1"/>
+                            <field name="is_allowed_hours_match" invisible="1"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>           
+
+<!-- ===================================================================================================================== -->
+                    <notebook>
+                        <page string='Store Planning'>
+                            <field name="bsi_work_planning_ids" force_save="1">
+                                <list editable='bottom'  >
+                                    <!-- <field name="selection_planning" /> -->
+                                    <field name="employee_id" domain="['|','|',('id','in', parent.store_employees_ids),('id','in', parent.store_manager_ids),('id','in',parent.district_manager_ids)]" />
+                                    <field name="starting_date" force_save="1" column_invisible="1"/>
+                                    <field name="day_1" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_2" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_3" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_4" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_5" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_6" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="day_7" options="{'no_create': True}" column_invisible="1"/>
+                                    <field name="wed_in" widget="float_time"/>
+                                    <field name="wed_out" widget="float_time" />
+                                    <field name="thur_in" widget="float_time"/>
+                                    <field name="thur_out" widget="float_time"/>
+                                    <field name="fri_in" widget="float_time"/>
+                                    <field name="fri_out" widget="float_time"/>
+                                    <field name="sat_in" widget="float_time"/>
+                                    <field name="sat_out" widget="float_time"/>
+                                    <field name="sun_in" widget="float_time"/>
+                                    <field name="sun_out" widget="float_time"/>
+                                    <field name="mon_in" widget="float_time"/>
+                                    <field name="mon_out" widget="float_time"/>
+                                    <field name="tue_in" widget="float_time"/>
+                                    <field name="tue_out" widget="float_time"/>
+                                    <field name="ending_date" force_save="1" readonly="1" column_invisible="1"/>
+                                    <field name="total_scheduled_hours_week" widget="float_time" />
+                                    <field name="bsi_work_planning_id" column_invisible='1' />
+                                </list>
+                            </field>
+                            <group class="oe_right">
+                                <field name="allowed_scheduling_hours" widget="float_time"/>
+                                <field name="total_scheduled_hours" class="oe_right" widget="float_time"/>
+                                <field name="over_or_short_allowed_hours" widget="float_time"/>
+                            </group>
+                        </page>
+                        <page string="Store Working">
+                            <field name="bsi_store_work_ids" force_save="1">
+                                <list editable="bottom" class="o_my_class">
+                                    <field name="employee_id"  />
+                                    <field name="starting_date" invisible="1"/>
+                                    <field name="day_1" widget="float_time"/>
+                                    <field name="day_2" widget="float_time"/>
+                                    <field name="day_3" widget="float_time"/>
+                                    <field name="day_4" widget="float_time"/>
+                                    <field name="day_5" widget="float_time"/>
+                                    <field name="day_6" widget="float_time"/>
+                                    <field name="day_7" widget="float_time"/>
+                                    <field name="ending_date" invisible="1"/>
+                                    <field name="total_worked_hours_week" widget="float_time"/>
+                                    <field name="emp_per_hr_wage" force_save="1"/>
+                                    <field name="total_expenses"/>
+                                    <button name="action_get_attendance" type="object" string=" " class="fa fa-refresh" help="To get Attendaces of Employee"/>
+                                    <button name="view_attendace_record" type="object" string=" " class="fa fa-info-circle" help="To check Attendances of Employee"/>
+                                </list>
+                            </field>
+                            <group class="oe_right">
+                                <field name="total_worked_hours" class="oe_right" widget="float_time" />
+                                <field name="over_or_short_worked_hours" widget="float_time"/>
+                            </group>
+
+                        </page>
+                        <page string="Store Cash Deposit">
+                            <field name="store_cash_deposit_ids">
+                                <list editable='bottom'>
+                                    <field name="deposit_amount"/>
+                                    <field name="image" widget="image" options="{'size': [(70,70)]}"/>
+                                    <field name="state"/>
+                                    <field name="store_scheduling_id" invisible="1"/>
+                                    <button name="action_approve_cash_deposit" type="object" string="Approve" class="btn-primary" invisible="state == 'approved'"/>
+                                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-primary" invisible="state == 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_work_hours_form_view" model="ir.ui.view">
+        <field name="name">bsi.work.hours.form</field>
+        <field name="model">bsi.work.hours</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <span class="o_form_label mx-3">
+                                <b>Starting Hours</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="starting_hour"/>
+                                <span class="o_form_label mx-3 "> </span>
+                                <field name="time_type" nolabel='1'/>
+                            </div>
+                            <span class="o_form_label mx-3">
+                                <b>Name</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="name" nolabel="1" />
+                            </div>
+                        </group>
+                        <group>
+                            <span class="o_form_label mx-3">
+                                <b>Ending Hours</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="ending_hour"/>
+                                <span class="o_form_label mx-3 "> </span>
+                                <field name="new_time_type" nolabel='1'/>
+                            </div>
+                            <span class="o_form_label mx-3">
+                                <b>Planned Hours</b>
+                            </span>
+                            <div class="d-flex">
+                                <field name="planned_hours" nolabel="1" widget="float_time" />
+                            </div>
+                        </group>
+                    </group>
+                    <p colspan="4" style="color: red;">
+                    <strong>Note :</strong> 24 Hours Time format is used.</p><br/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bsi_work_hours_list_view" model="ir.ui.view">
+        <field name="name">bsi.work.hours.list.view</field>
+        <field name="model">bsi.work.hours</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bsi_work_hour_view" model="ir.actions.act_window">
+        <field name="name">Employee Hours Management</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">bsi.work.hours</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- JAN17 2025 - RM = New list View Add -->
+    <record id="bsi_store_scheduling_list_view" model="ir.ui.view">
+        <field name="name">store.scheduling.list</field>
+        <field name="model">store.scheduling</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="store_id" />
+                <field name="combination_rec_name"/>
+                <field name="week_starting_date" />
+                <field name="week_ending_date" />
+                <field name="net_sales" />
+                <field name="allowed_food_cost" />
+                <field name="food_cost" />
+                <field name="over_or_short_food_cost" />
+                <field name="over_or_short_food_bank_and_truck" />
+                <field name="matrix_allowed_hours" />
+                <field name="total_hours" />
+                <field name="over_or_short_matrix_hours" />
+                <field name="fixed_hours" />
+                <field name="paychex_total_debit" />
+                <field name="state" widget="badge"/>
+                <field name="is_allowed_hours_match" invisible='1'/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bsi_store_scheduling_graph_view" model="ir.ui.view">
+        <field name="name">store.scheduling.graph</field>
+        <field name="model">store.scheduling</field>
+        <field name="arch" type="xml">
+            <graph string="Store Scheduling" sample="1">
+                <field name="store_id"/>
+                <field name="total_scheduled_hours" type="measure"/>
+                <field name="total_worked_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="bsi_store_scheduling_pivot_view" model="ir.ui.view">
+        <field name="name">store.scheduling.pivot</field>
+        <field name="model">store.scheduling</field>
+        <field name="arch" type="xml">
+            <pivot string="Store Scheduling" sample="1">
+                <field name="store_id" type="row"/>
+                <field name="net_sales" type="measure"/>
+                <field name="food_cost" type="measure"/>
+                <field name="allowed_percentage_food_cost" type="measure"/> 
+                <field name="food_cost_in_percentage" type="measure"/>
+                <field name="over_or_short_food_cost" type="measure"/>
+                <field name="ytd_over_or_short_food_cost" type="measure"/>
+                <field name="allowed_scheduling_hours" type="measure"/>
+                <field name="total_scheduled_hours" type="measure"/>
+                <field name="over_or_short_matrix_hours" type="measure"/>
+                <field name="payroll_taxes" type="measure"/>
+                <field name="paychex_total_debit" type="measure"/>  
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bsi_store_scheduling_search_view" model="ir.ui.view">
+        <field name="name">store.scheduling.search.view</field>
+        <field name="model">store.scheduling</field>
+        <field name="arch" type="xml">
+            <search>
+                <separator/>
+                <filter name="unactive" string="Archived" domain="[('active','=',False)]"/>
+                <filter name="fltr_current_month" string="Current Month" date="week_ending_date" default_period="month"/>
+                <group expand="0" string="Group By">
+                    <filter string="Store" name="group_by_store" context="{'group_by':'store_id'}"/>
+                    <filter string="Store Year" name="group_by_year" context="{'group_by':'week_ending_date:year'}"/>
+                    <filter string="Store Month" name="group_by_month" context="{'group_by':'week_ending_date:month'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bsi_store_scheduling_views" model="ir.actions.act_window">
+        <field name="name">Store Scheduling</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">store.scheduling</field>
+        <field name="context">{
+            'search_default_group_by_store': True,
+            'search_default_group_by_year': True,
+            'search_default_group_by_month': True,
+            'search_default_fltr_current_month': True}</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <!-- <field name="view_id" ref="bsi_store_scheduling_list_view"/> -->
+        <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('bsi_subway_base.bsi_store_scheduling_list_view')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('bsi_subway_base.bsi_store_scheduling_form_view')})]"/>
+    </record>
+
+    <record id="action_bsi_store_district_manager_views" model="ir.actions.act_window">
+        <field name="name">Scheduling Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">store.scheduling</field>
+        <field name="context">{}</field>
+        <field name="domain">[('state','=','to_be_approve')]</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('bsi_subway_base.bsi_store_scheduling_list_view')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('bsi_subway_base.bsi_store_scheduling_requests_form_view')})]"/>
+    </record>
+
+</odoo>

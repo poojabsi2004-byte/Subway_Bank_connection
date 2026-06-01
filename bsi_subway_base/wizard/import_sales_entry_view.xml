@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bsi_import_sales_entry_form_view" model="ir.ui.view">
+        <field name="name">bsi.import.sales.entry.wizard.form</field>
+        <field name="model">bsi.import.sales.entry.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Product">
+                <sheet>
+                    <group>
+                        <field name="file"/>
+                        <field name="end_date" required='0' invisible="0"/>
+                        <field name="store_id" required='1'/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                        <button string="Import File" type="object" name="import_button" class="btn-default"  invisible="1" />
+                        <button string="Import Payroll" type="object" name="import_payrollsheet_button" class="btn-default"/>
+                    </footer>
+                </sheet>
+            </form>	   		
+        </field>
+    </record>
+
+    <record id="action_bsi_import_sales_entry_form_view" model="ir.actions.act_window">
+        <field name="name">Import Sales Entry</field>
+        <field name="res_model">bsi.import.sales.entry.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="bsi_import_sales_entry_form_view"/>	
+    </record>
+
+    <menuitem id="menu_action_bsi_import_sales_entry_form_view"
+        name="Import Sales Data"
+        parent="bsi_subway_base.config_import_update_submenu"
+        action="action_bsi_import_sales_entry_form_view"
+        sequence="1"/>
+
+</odoo>

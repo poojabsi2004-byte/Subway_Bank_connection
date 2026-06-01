@@ -1,0 +1,28 @@
+<odoo>
+	<data>
+
+        <record id="paperformat_employee_payroll_report" model="report.paperformat">
+            <field name="name">Employee Weekly Payroll Report Format</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">12</field>
+            <field name="margin_bottom">8</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">11</field>
+            <field name="dpi">100</field>
+        </record>
+
+		<record id="action_employee_payroll_report" model="ir.actions.report">
+			<field name="name">Employee Weekly Payroll</field>
+			<field name="model">bsi.employee.payroll.entry.wizard</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">bsi_subway_base.weekly_payroll_report</field>
+			<field name="report_file">bsi_subway_base.weekly_payroll_report</field>	
+			<field name="paperformat_id" ref="bsi_subway_base.paperformat_employee_payroll_report"/>
+	        <field name="binding_type">report</field>
+		</record>
+	</data>
+</odoo>

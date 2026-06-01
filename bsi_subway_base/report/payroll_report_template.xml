@@ -1,0 +1,221 @@
+<odoo>
+    <data>
+        <template id="weekly_payroll_report">
+            <t t-call="web.html_container">
+                <t t-set="store_name" t-value="data['store_name']"/>
+                
+                <!-- Header Section -->
+                <div class="header" style="margin-top: 10px;">
+                    <t t-set="week_number" t-value="data['week_count'] - 1"/>
+                    <span style="float: left; width:30%;"><t t-esc="store_name"/></span>
+                    <span style="float: right; width:18%;"><t t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')"/> </span><br/>
+                    <span style="margin-left:38%; font-weight: bold; font-size: 18px;">Weekly Printed Payroll Report</span>
+                    <br/>
+                </div>
+
+                <!-- Report Body Section -->
+                <div class="page" style="padding-top: 12px;">
+                    <div style="text-align: center;">
+                        <t t-set="start_date" t-value="data['start_date']"/>
+                        <t t-set="end_date" t-value="data['end_date']"/>
+                        <span style="font-weight: bold; font-size:22px;"> <t t-esc="week_number"/> Week Printed Payroll Report</span>
+                        <br/>
+                        <span style="float: left; width:40%; color:red; "> * Indicates a user-edited time punch </span>
+                        <span style="float: right; width:30%;"> Starting Date: <t t-esc="start_date"/></span>
+                        <br/>
+                        <span style="float: left; width:35%; color:blue; "> ^ Indicates system time punch </span>
+                        <span style="float: right; width:30%;">  Ending Date: <t t-esc="end_date"/></span>
+                        <br/>
+                    </div>
+                    <br/>
+
+                    <t t-set="week_count" t-value="data['week_count']"/>
+
+                    <table class="table table-condensed" style="width: 100%; border: 2px solid black; border-collapse: collapse; font-size:13px; text-align: center; padding-top:10px;">
+
+                        <thead style="color:#4B4949; border: 1px solid black;">
+                            <t t-foreach="data['header_data']" t-as="header">
+                                <t t-foreach="header" t-as="header_line">
+                                    <tr >
+                                        <th t-esc="header_line[0]" style="width: 6%;"/>
+                                        <th t-esc="header_line[1]" style="font-weight: bold; width: 16.25%; text-align: left;"/>
+                                        <th t-esc="header_line[2]" style="width: 10.25%;"/>
+                                        <th t-esc="header_line[3]" style="width: 10.25%;"/>
+                                        <th t-esc="header_line[4]" style="width: 10.25%;"/>
+                                        <th t-esc="header_line[5]" style="width: 10.25%;"/>
+                                        <th t-esc="header_line[6]" style="width: 10.25%;"/> 
+                                        <th t-esc="header_line[7]" style="width: 10.25%;"/>
+                                        <th t-esc="header_line[8]" style="width: 10.25%;"/>
+                                        <th t-esc="header_line[9]" style="width: 6%;"/>
+                                    </tr>
+                                </t>
+                            </t>
+                        </thead>
+
+                        <tbody>
+                            <t t-set="employee_counter" t-value="0"/>
+
+                            <t t-foreach="data['employee_data']" t-as="employee">
+
+                                <t t-set="counter" t-value="1"/>
+
+                                <t t-set="is_employee" t-value="1"/>
+
+                                <t t-foreach="employee" t-as="line">
+                                    <t t-if="is_employee == 1 and employee_counter != 0">
+                                        <tr>
+                                            <td colspan="10">
+                                                <div style="border-bottom: 2px dotted black; width: 100%;"></div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-set="is_employee" t-value="0"/>
+                                    
+                                    <t t-set="employee_counter" t-value="1"/>
+
+                                    <t t-set="length" t-value="len(line)"/>
+
+                                    <t t-set="counted_length" t-value="1"/>
+
+                                    <t t-foreach="line" t-as="sub_line">
+
+                                        <t t-foreach="sub_line" t-as="inner_line">
+                                            <t t-if="counted_length != length">
+                                                <t t-if="counter == 1">
+                                                    <tr style="">
+                                                        <td t-esc="inner_line[0]" style="width: 6%;"/>
+                                                        <td t-esc="inner_line[1]" style="width: 16.25%; text-align: left !important; color: #6F6C6C;"/>
+                                                        <td t-raw="inner_line[2]" style="width: 10.25%; border-left: 1px solid black;"/>
+                                                        <td t-raw="inner_line[3]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[4]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[5]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[6]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[7]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[8]" style="width: 10.25%;"/>
+                                                        <td t-esc="inner_line[9]" style="width: 6%; border:"/>
+                                                    </tr>
+                                                    <t t-set="counter" t-value="counter + 1"/>
+                                                </t>
+
+                                                <t t-else="">
+                                                    <tr style=" ">
+                                                        <td t-esc="inner_line[0]" style="width: 6%;"/>
+                                                        <td t-esc="inner_line[1]" style="width: 16.25%; text-align: left !important; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[2]" style="width: 10.25%; border-left: 1px solid black;"/>
+                                                        <td t-raw="inner_line[3]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[4]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[5]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[6]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[7]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[8]" style="width: 10.25%;"/>
+                                                        <td t-esc="inner_line[9]" style="width: 6%;"/>
+                                                    </tr>
+                                                    <t t-set="counter" t-value="counter + 1"/>
+                                                </t>
+                                            </t>
+
+                                            <t t-if="counted_length == length">
+                                                <t t-if="counter == 1">
+                                                    <tr style="">
+                                                        <td t-esc="inner_line[0]" style="width: 6%;"/>
+                                                        <td t-esc="inner_line[1]" style="width: 16.25%; text-align: left !important; color: #6F6C6C;"/>
+                                                        <td t-raw="inner_line[2]" style="width: 10.25%; border-left: 1px solid black;"/>
+                                                        <td t-raw="inner_line[3]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[4]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[5]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[6]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[7]" style="width: 10.25%;"/>
+                                                        <td t-raw="inner_line[8]" style="width: 10.25%;"/>
+                                                        <td t-esc="inner_line[9]" style="width: 6%; border:"/>
+                                                    </tr>
+                                                    <t t-set="counter" t-value="counter + 1"/>
+                                                </t>
+
+                                                <t t-else="">
+                                                    <tr style=" ">
+                                                        <td t-esc="inner_line[0]" style="width: 6%;"/>
+                                                        <td t-esc="inner_line[1]" style="width: 16.25%; text-align: left !important; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[2]" style="width: 10.25%; border-left: 1px solid black; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[3]" style="width: 10.25%; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[4]" style="width: 10.25%; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[5]" style="width: 10.25%; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[6]" style="width: 10.25%; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[7]" style="width: 10.25%; font-weight:bold;"/>
+                                                        <td t-raw="inner_line[8]" style="width: 10.25%; font-weight:bold;"/>
+                                                        <td t-esc="inner_line[9]" style="width: 6%; font-weight:bold;"/>
+                                                    </tr>
+                                                    <t t-set="counter" t-value="counter + 1"/>
+                                                </t>
+
+                                            </t>
+
+                                        </t>
+
+                                        <t t-if="is_employee == 0 and counted_length != length">
+
+                                            <tr>
+                                                <td/>
+                                                <td colspan="9">
+                                                    <div style="border-bottom: 1px solid black; width: 100%;"></div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        
+                                        <t t-set="counted_length" t-value="counted_length + 1"/>
+
+                                    </t>
+                                </t>
+
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Week List Section -->
+                    <t t-foreach="data['week_list']" t-as="week">
+                        <table class="table table-condensed" style="width: 100%; border-right: 2px solid black; border-left: 2px solid black; border-bottom: 2px solid black; border-collapse: collapse; font-size:13px; page-break-inside: avoid;">
+                            <t t-foreach="week" t-as="week_line">
+                                <tr style="font-weight:bold; ">
+                                    <td t-esc="week_line[0]" style="width: 23%;"/>
+                                    <td t-esc="week_line[1]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[2]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[3]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[4]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[5]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[6]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[7]" style="width: 10.28%;"/>
+                                    <td t-esc="week_line[8]" style="width: 5%;"/>
+                                </tr>
+                            </t>
+                        </table>
+                    </t>
+
+                    <!-- Store Data Section -->
+                    <table class="table table-condensed" style="width: 100%; border-right: 2px solid black; border-left: 2px solid black; border-bottom: 2px solid black; border-collapse: collapse; font-size:13px; page-break-inside: avoid;">
+                        <t t-foreach="data['store_data']" t-as="store_data">
+                            <tr style="font-weight:bold; ">
+                                <td t-esc="store_data[0]" style="width: 23%;"/>
+                                <td t-esc="store_data[1]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[2]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[3]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[4]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[5]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[6]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[7]" style="width: 10.28%;"/>
+                                <td t-esc="store_data[8]" style="width: 5%;"/>
+                            </tr>
+                        </t>
+                    </table>
+
+                </div>
+
+                <!-- Footer Section with Pagination -->
+                <div class="footer" style="text-align: right; width: 100%; font-size: 14px;">
+                    <div>
+                        <span class="page"/>/<span class="topage"/>
+                    </div>
+                </div>
+
+            </t>
+        </template>
+    </data>
+</odoo>

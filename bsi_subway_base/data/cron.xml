@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<!-- #MP TODO- Need to re-test-->
+		<record id="bsi_subway_store_scheduling_new_records_automation" model="ir.cron">
+			<field name="name">Three Week Temporary Automation</field>
+			<field name="active" eval="False"/>
+			<field name="priority">5</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">months</field>
+			<!-- <field name="numbercall">-1</field> -->
+			<field name="model_id" ref="bsi_subway_base.model_store_scheduling"/>
+			<field name="code">model.three_week_temporary_schedular()</field>
+			<field name="state">code</field>
+		</record>
+
+		<!-- #MP TODO- Need to re-test-->
+		<record id="bsi_subway_store_scheduling_every_week_record" model="ir.cron">
+			<field name="name">Every week new schedule Automation</field>
+			<field name="active" eval="True"/>
+			<field name="priority">5</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">weeks</field>
+			<!-- <field name="numbercall">-1</field> -->
+			<field name="model_id" ref="bsi_subway_base.model_store_scheduling"/>
+			<field name="code">model.every_week_automation()</field>
+			<field name="state">code</field>
+		</record>
+
+		<!-- #MP TODO- Need to re-test 
+		ERROR while executing:
+		File "/home/botspotpc1/workspace/odoo/v15/Projects/Subway/live_addons/bsi_subway_base/models/store_scheduling_crons.py", line 61, in readonly_data_when_user_is_not_admin
+    	previous_to_previous_week_ending_date = previous_week.week_starting_date - timedelta(days=1)
+		TypeError: unsupported operand type(s) for -: 'bool' and 'datetime.timedelta'-->
+		<!-- <To-DO Later to turn once they start to do scheduling on regular basis to mark schedulings as done> -->
+		<record id="bsi_subway_store_scheduling_readonly_records" model="ir.cron">
+			<field name="name">Custom: Read only Records When User is not Admin</field>
+			<field name="active" eval="False"/>
+			<field name="priority">5</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">weeks</field>
+			<!-- <field name="numbercall">-1</field> -->
+			<field name="model_id" ref="bsi_subway_base.model_store_scheduling"/>
+			<field name="code">model.readonly_data_when_user_is_not_admin()</field>
+			<field name="state">code</field>
+		</record>
+
+		<record id="bsi_subway_update_store_wise_attendance" model="ir.cron">
+			<field name="name">Custom: Update Store Wise Attendance</field>
+			<field name="active" eval="True"/>
+			<field name="priority">5</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<!-- <field name="numbercall">-1</field> -->
+			<field name="model_id" ref="bsi_subway_base.model_res_users"/>
+			<field name="code">model.compute_domain_employee_ids()</field>
+			<field name="state">code</field>
+		</record>
+
+		<!-- #MP TODO- Need to convert as per new format: New change, Now we have many2many for SM and DM too at store. -->
+		<record id="ir_cron_check_district_manager_employee_check_in_out" model="ir.cron">
+            <field name="name">District Manager Attendance Record Check</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root" />
+            <field name="model_id" ref="model_hr_attendance" />
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model._check_district_manager_employee_check_in_out()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <!-- <field name="numbercall">-1</field> -->
+        </record>
+
+        <!-- RM- AUG21-2025 Cash Deposit Remider -->
+        <record id="ir_cron_cash_deposit_alert" model="ir.cron">
+			<field name="name">Cash Deposit Alert</field>
+			<field name="active" eval="False"/>
+			<field name="priority">5</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<!-- <field name="numbercall">-1</field> -->
+			<field name="model_id" ref="bsi_subway_base.model_store_scheduling"/>
+			<field name="code">model._check_cash_deposit_alert()</field>
+			<field name="state">code</field>
+		</record>
+
+        <!-- RM- AUG21-2025 Update Recipient Users -->
+		<record id="ir_cron_update_recipient_users" model="ir.cron">
+			<field name="name">Update Recipient Users</field>
+			<field name="active" eval="False"/>
+			<field name="priority">5</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<!-- <field name="numbercall">-1</field> -->
+			<field name="model_id" ref="bsi_subway_base.model_store_store"/>
+			<field name="code">model._update_recipient_users()</field>
+			<field name="state">code</field>
+		</record>
+	</data>
+</odoo>
