@@ -226,7 +226,7 @@ class HrEmployee(models.Model):
     # display_combine_name = fields.Char(string="Name",compute="_compute_name")
     # name = fields.Char(string="First Name", required=True,tracking=True,copy=True)
     first_name = fields.Char(string="First Name", required=True,tracking=True,copy=True)
-    middle_name = fields.Char(string="Middle Name", required=True,tracking=True)
+    middle_name = fields.Char(string="Middle Name", tracking=True)
     last_name = fields.Char(string="Last Name", help="Maximum of 15 characters allowed.", required=True,tracking=True)
     
     # store_no = fields.Integer(string="Store No.", required=True,tracking=True)
@@ -255,7 +255,9 @@ class HrEmployee(models.Model):
     country = fields.Many2one("res.country", string="Country", help="Country", required=False,tracking=True)
 
     legal_entity_name = fields.Char(string="Legal Entity name", required=False,tracking=False)
-    franchise_name = fields.Char(string="Franchise Name", required=False,tracking=False)
+    # franchise_name = fields.Char(string="Franchise Name", required=False,tracking=False)
+    franchise_name = fields.Selection([("", ""),("subway", "Subway"),("biggby", "Biggby"),("hangry_joe's", "Hangry Joe's")],required=False,tracking=True)
+
     hired_date = fields.Date(string="Hired Date", required=False,tracking=False)
     employment_type = fields.Selection([("", ""),("full_time", "Full Time"),("part_time", "Part_Time"),],required=False,tracking=True)
     employment_title = fields.Selection([("", ""),("sandwich_artist", "Sandwich Artist"),("assistant_store_manager", "Assistant Store Manager"),("store_manager", "Store Manager"),],required=False,tracking=True)
@@ -308,6 +310,22 @@ class HrEmployee(models.Model):
         ],default='draft_state'
     )
 
+    @api.onchange('type_of_compensation')
+    def _onchange_type_of_compensation(self):
+        for rec in self:
+            rec.dollars = 0
+            rec.cents = 0
+
+            if rec.type_of_compensation == 'hourly_rate':
+                rec.salary = 0
+
+            elif rec.type_of_compensation == 'salary':
+                rec.hourly_rate = 0
+
+            else:
+                rec.hourly_rate = 0
+                rec.salary = 0
+
     @api.constrains('first_name', 'middle_name', 'last_name')
     def _check_name_format(self):
         for rec in self:
@@ -359,18 +377,18 @@ class HrEmployee(models.Model):
     def action_replace_with_signed_pdf(self):
         report_xml_id = 'bsi_subway_base.action_report_new_hire_packet'
         pdf_content, _ = self.env['ir.actions.report']._render_qweb_pdf(report_xml_id, self.ids)
-        
+
         if pdf_content:
             encoded_pdf = base64.b64encode(pdf_content)
             filename = f"Click here see the Signed Hiring Policy.pdf"
             current_user = self.env.user.name
-            
+
             self.write({
                 'custom_pdf_file': encoded_pdf,
                 'custom_pdf_filename': filename,
                 'is_policy_signed': True
             })
-            
+
             attachment = self.env['ir.attachment'].create({
                 'name': filename,
                 'type': 'binary',
@@ -379,13 +397,13 @@ class HrEmployee(models.Model):
                 'res_id': self.id,
                 'mimetype': 'application/pdf'
             })
-            
+
             log_message = f"Digital signature PDF has been updated by {current_user}."
             self.message_post(
                 body=log_message,
                 attachment_ids=[attachment.id]
             )
-            
+
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
@@ -403,7 +421,7 @@ class HrEmployee(models.Model):
         self.application_state='draft_state'
 
     def request_store_access(self):
-        self.ensure_one()   
+        self.ensure_one()
         required_fields = ['date_of_birth',
             'cell_no_1', 'cell_no_2', 'cell_no_3',
             'gender', 'tz', 'address', 'address_line_2', 'city', 'postal_zip_code', 'state', 'country',
@@ -429,7 +447,7 @@ class HrEmployee(models.Model):
                 if value in (False, '', None):
                     missing_fields.append(field_name)
             elif field_type in ['integer', 'float', 'monetary']:
-                if value is None: 
+                if value is None:
                     missing_fields.append(field_name)
 
         if self.req_emp_fields:
@@ -446,8 +464,8 @@ class HrEmployee(models.Model):
         mail_values = {
             'subject': f"Store Access Request – {full_name}",
             'email_to': district_manager_email,
-            'email_from': self.email_id,  
-            'email_cc': self.email_id,  
+            'email_from': self.email_id,
+            'email_cc': self.email_id,
             'body_html': f"""
                 <p>Dear District Manager({dm_name}),</p>
 
@@ -936,6 +954,12 @@ class HrEmployee(models.Model):
                     Username: {self.user_id.login}<br/>
                     Password: {password}</p>
                     <br/>
+                    
+                    <p>
+                        <b>NOTE:</b> This email is auto-generated. Please do not reply to this email.
+                        If you have any questions, please contact your DM.
+                    </p><br/>
+                    
                     <p>Best regards,<br/>
                     Admin Team</p>
                 """,

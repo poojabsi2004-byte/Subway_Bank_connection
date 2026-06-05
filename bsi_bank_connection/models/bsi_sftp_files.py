@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
 import datetime, base64
 from datetime import timedelta
 import paramiko
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class BSIBankFile(models.Model):
     _name = "bsi.sftp.files"
@@ -19,7 +23,32 @@ class BSIBankFile(models.Model):
         password = self.env['ir.config_parameter'].sudo().get_param('bsi_bank_connection.sftp_password')
 
         if not username or not password:
-            raise ValidationError("SFTP account credentials could not be fetched.")
+            _logger.error("SFTP credentials are not configured.")
+
+            admin_users = self.env.ref('base.group_system').users.filtered(
+                lambda u: u.email
+            )
+
+            emails = ','.join(admin_users.mapped('email'))
+            print("\n\n\n\n\n--- - ---emails - --- -- \n\n\n", emails)
+
+            if emails:
+                mail = self.env['mail.mail'].sudo().create({
+                    'subject': 'SFTP Configuration Error',
+                    'body_html': """
+                        <p>SFTP credentials are not configured.</p>
+                        <p>Please configure the SFTP Username and Password in Settings.</p>
+                    """,
+                    'email_to': emails,
+                })
+
+                try:
+                    mail.send()
+                    _logger.info("Mail sent successfully")
+                except Exception as e:
+                    _logger.exception("Mail sending failed: %s", str(e))
+            return False
+
 
         host = '178.156.207.111'
         port = 22
@@ -184,3 +213,55 @@ class BSIBankFile(models.Model):
             'domain': [('file_id', 'in', processed_file_ids)],
             'target': 'current',
         }
+        
+    # def action_run_bank_pipeline(self):
+    #     """Called from the list-view button."""
+    #     print("\n\n\n\n\n--- - -action_run_bank_pipeline -- - -\n\n\n\n")
+    #     return self.env['bsi.sftp.files'].sudo().cron_run_bank_pipeline()
+
+    @api.model
+    def cron_run_bank_pipeline(self):
+        print("===== BANK PIPELINE CRON START =====")
+
+        File      = self.env['bsi.sftp.files'].sudo()
+        Statement = self.env['bsi.store.bank.statements'].sudo()
+
+        try:
+            File.sftp_connection()
+            print("Phase 1 OK: SFTP fetch done")
+        except Exception as e:
+            print("Phase 1 (fetch) FAILED:", e)
+
+        for file in File.search([('state', '=', 'fetched')]):
+            try:
+                with self.env.cr.savepoint():
+                        file.generate_statement()
+                print("Phase 2 OK: statements generated for", file.file_name)
+            except Exception as e:
+                print("Phase 2 FAILED for file", file.file_name, ":", e)
+
+        draft_statements = Statement.search([
+            ('file_id.state', '=', 'statements'),
+        ])
+        for stmt in draft_statements:
+            try:
+                with self.env.cr.savepoint():
+                        stmt.generate_transactions()
+                print("Phase 3 OK: transactions generated for statement", stmt.id)
+            except Exception as e:
+                print("Phase 3 FAILED for statement", stmt.id, ":", e)
+
+        for stmt in Statement.search([('state', 'in', ['error', 'transactions'])]):
+            try:
+                with self.env.cr.savepoint():
+                    if stmt.state == 'error':
+                        stmt.state = 'transactions'
+                        stmt.update_both_foodcost_payroll()
+                    elif stmt.state == 'transactions':
+                        stmt.update_both_foodcost_payroll()
+                print("Phase 4 OK: update both for statement", stmt.id)
+            except Exception as e:
+                print("Phase 4 FAILED for statement", stmt.id, ":", e)
+
+        print("===== BANK PIPELINE CRON END =====")
+        return True

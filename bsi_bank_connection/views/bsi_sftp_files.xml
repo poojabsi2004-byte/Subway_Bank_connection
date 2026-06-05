@@ -5,7 +5,8 @@
         <field name="arch" type="xml">
             <list>
                 <header>
-                    <button string="Fetch Data" name="sftp_connection" type="object" class="oe_highlight" display="always"/>
+                    <button string="Fetch Data" name="action_run_bank_pipeline" type="object" class="oe_highlight" display="always"/>
+                    <!-- <button string="Fetch Data" name="sftp_connection" type="object" class="oe_highlight" display="always"/> -->
                 </header>
                 <field name="file_name"/>
             </list>
@@ -19,7 +20,7 @@
             <form>
                 <header>
                     <field name="state" widget="statusbar"/>
-                    <button string="Generate Statements" name="generate_statement" type="object" class="oe_highlight" invisible="state == 'statements'"/>
+                    <button string="Generate Statements" name="generate_statement" type="object" class="oe_highlight" invisible="state in ['statements']"/>
                 </header>
                 <sheet>
                     <group>
